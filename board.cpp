@@ -11,8 +11,8 @@ Board::Board()
 
 void Board::setup() {
     std::mt19937 mersenne(static_cast<std::mt19937::result_type>(std::time(nullptr)));
-    std::uniform_int_distribution<> minePlaceRow(0, ROW_COUNT);
-    std::uniform_int_distribution<> minePlaceCol(0, COL_COUNT);
+    std::uniform_int_distribution<> minePlaceRow(0, ROW_COUNT-1);
+    std::uniform_int_distribution<> minePlaceCol(0, COL_COUNT-1);
     int numMines = MINE_COUNT;
     while(numMines) {
         unsigned long row = static_cast<unsigned long>(minePlaceRow(mersenne));
