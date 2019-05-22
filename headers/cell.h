@@ -5,6 +5,8 @@
 #include <vector>
 #include <random>
 #include <ctime>
+#include <memory>
+
 // used exclusively for storing the state of a cell
 // all actual computations should be handled by the Board class
 

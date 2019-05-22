@@ -2,6 +2,7 @@
 #define BOARD_H
 
 #include "cell.h"
+
 // a grid of cells
 // does all game related computations
 
@@ -14,6 +15,7 @@ private:
 public:
     Board();
     void setup();
+    void debug_show();
 };
 
 #endif // BOARD_H

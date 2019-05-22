@@ -1,10 +1,8 @@
 LICENSE
 README.md
-board.cpp
-board.h
-cell.cpp
-cell.h
 headers/board.h
 headers/cell.h
+makefile
 src/board.cpp
 src/cell.cpp
+src/main.cpp

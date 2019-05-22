@@ -1,4 +1,4 @@
-#include "board.h"
+#include "../headers/board.h"
 
 Board::Board()
 {
@@ -23,4 +23,19 @@ void Board::setup() {
         numMines--;
     }
     // TODO: set neighbor mine count
+}
+
+void Board::debug_show() {
+    for(unsigned long i = 0; i < ROW_COUNT; i++) {
+        for(unsigned long j = 0; j < COL_COUNT; j++) {
+            char sym;
+            if(this->gameBoard[i][j].mineCheck())
+                sym = 'X';
+            else {
+                sym = 'O';
+            }
+            std::cout << sym << " ";
+        }
+        std::cout << "\n";
+    }
 }

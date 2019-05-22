@@ -1,4 +1,4 @@
-#include "cell.h"
+#include "../headers/cell.h"
 
 int Cell::getPosX() {
     return this->xPos;
