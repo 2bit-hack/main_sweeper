@@ -15,3 +15,11 @@ int Cell::neighbors() {
 bool Cell::mineCheck() {
     return this->isMine;
 }
+
+void Cell::setMine() {
+    this->isMine = true;
+}
+
+Cell::State Cell::getState() {
+    return this->state;
+}
