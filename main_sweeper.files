@@ -4,3 +4,7 @@ board.cpp
 board.h
 cell.cpp
 cell.h
+headers/board.h
+headers/cell.h
+src/board.cpp
+src/cell.cpp
