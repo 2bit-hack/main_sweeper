@@ -1,11 +1,17 @@
 #ifndef CELL_H
 #define CELL_H
 
+#include <vector>
 // used exclusively for storing the state of a cell
 // all actual computations should be handled by the Board class
 
 class Cell {
 private:
+    enum class state {
+        UNREVEALED,
+        FLAGGED,
+        REVEALED
+    };
     int xPos, yPos;
     bool isMine;
     int neighborCount;

@@ -1,4 +1,6 @@
 LICENSE
 README.md
+board.cpp
+board.h
 cell.cpp
 cell.h
