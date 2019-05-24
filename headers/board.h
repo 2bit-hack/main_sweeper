@@ -9,13 +9,15 @@
 class Board
 {
 private:
-    std::vector<std::vector<Cell>> gameBoard;
+    std::vector<Cell> gameBoard;
     bool hasWon, hasLost;
     int minesRemaining;
 public:
     Board();
+    ~Board();
     void setup();
     void debug_show();
+    void debug_show_counts();
 };
 
 #endif // BOARD_H
