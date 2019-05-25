@@ -16,6 +16,7 @@ public:
     Board();
     ~Board();
     void setup();
+    void floodFill(unsigned long i, unsigned long j);
     void triggerWinCondition();
     void triggerLoseCondition();
 

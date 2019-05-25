@@ -55,10 +55,33 @@ void Board::triggerLoseCondition() {
     this->hasLost = true;
 }
 
-
-
-
-
+void Board::floodFill(unsigned long i, unsigned long j) {
+    // if it's a mine
+    if(this->gameBoard[(i*COL_COUNT)+j].mineCheck()) {
+        return;
+    }
+    // if it's already revealed
+    if(this->gameBoard[(i*COL_COUNT)+j].getState() == Cell::State::REVEALED) {
+        return;
+    }
+    // if it's an invalid position
+    if(i < 1 || i >= ROW_COUNT-1 || j < 1 || j >= ROW_COUNT-1) {
+        return;
+    }
+    // if it has non-zero neighbors
+    if(this->gameBoard[(i*COL_COUNT)+j].neighbors() != 0) {
+        return;
+    }
+    this->gameBoard[(i*COL_COUNT)+j].setState(Cell::State::REVEALED);
+    floodFill(i-1, j-1);
+    floodFill(i-1, j);
+    floodFill(i-1, j+1);
+    floodFill(i, j-1);
+    floodFill(i, j+1);
+    floodFill(i+1, j-1);
+    floodFill(i+1, j);
+    floodFill(i+1, j+1);
+}
 
 
 // debug functions go here
@@ -66,7 +89,14 @@ void Board::triggerLoseCondition() {
 void Board::debug_set_revealed(int i, int j) {
     unsigned long _i = static_cast<unsigned long>(i);
     unsigned long _j = static_cast<unsigned long>(j);
-    this->gameBoard[(_i*COL_COUNT)+_j].setState(Cell::State::REVEALED);
+    if(this->gameBoard[(_i*COL_COUNT)+_j].neighbors() != 0)
+        this->gameBoard[(_i*COL_COUNT)+_j].setState(Cell::State::REVEALED);
+    else if(this->gameBoard[(_i*COL_COUNT)+_j].mineCheck()) {
+        this->gameBoard[(_i*COL_COUNT)+_j].setState(Cell::State::REVEALED);
+    }
+    else {
+        floodFill(_i, _j);
+    }
 }
 
 void Board::debug_show() {
