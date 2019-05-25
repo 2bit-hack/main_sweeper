@@ -9,9 +9,12 @@
 class Board
 {
 private:
+    enum class GameState {
+      IN_PROGRESS, WON, LOST
+    };
     std::vector<Cell> gameBoard;
-    bool hasWon, hasLost;
     int nonMinesRemaining;
+    GameState gState;
 public:
     Board();
     ~Board();

@@ -2,7 +2,7 @@
 
 Board::Board()
 {
-    this->hasWon = false; this->hasLost = false;
+    this->gState = Board::GameState::IN_PROGRESS;
     this->nonMinesRemaining = (ROW_COUNT * COL_COUNT) - MINE_COUNT;
     this->gameBoard.reserve(ROW_COUNT * COL_COUNT);
     for(unsigned long i = 0; i < ROW_COUNT; i++) {
@@ -17,10 +17,12 @@ Board::~Board() {
 }
 
 void Board::setup() {
+    // setting up prng and randomly selecting rows and cols
     std::mt19937 mersenne(static_cast<std::mt19937::result_type>(std::time(nullptr)));
     std::uniform_int_distribution<> minePlaceRow(1, ROW_COUNT-2);
     std::uniform_int_distribution<> minePlaceCol(1, COL_COUNT-2);
     int numMines = MINE_COUNT;
+    // placing the mines
     while(numMines) {
         unsigned long row = static_cast<unsigned long>(minePlaceRow(mersenne));
         unsigned long col = static_cast<unsigned long>(minePlaceCol(mersenne));
@@ -30,6 +32,7 @@ void Board::setup() {
         this->gameBoard[row*COL_COUNT + col].setMine();
         numMines--;
     }
+    // incrementing neighbor count of nearby cells
     for(unsigned long i = 1; i < ROW_COUNT-1; i++) {
         for(unsigned long j = 1; j < COL_COUNT-1; j++) {
             if(this->gameBoard[i*COL_COUNT + j].mineCheck())
@@ -48,14 +51,15 @@ void Board::setup() {
 }
 
 void Board::triggerWinCondition() {
-    this->hasWon = true;
+    this->gState = Board::GameState::WON;
 }
 
 void Board::triggerLoseCondition() {
-    this->hasLost = true;
+    this->gState = Board::GameState::LOST;
 }
 
 void Board::floodFill(unsigned long i, unsigned long j) {
+    // base cases
     // if it's a mine
     if(this->gameBoard[(i*COL_COUNT)+j].mineCheck()) {
         return;
