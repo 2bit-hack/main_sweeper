@@ -2,7 +2,9 @@
 
 Board::Board()
 {
-    this->gameBoard.reserve(100);
+    this->hasWon = false; this->hasLost = false;
+    this->nonMinesRemaining = (ROW_COUNT * COL_COUNT) - MINE_COUNT;
+    this->gameBoard.reserve(ROW_COUNT * COL_COUNT);
     for(unsigned long i = 0; i < ROW_COUNT; i++) {
         for(unsigned long j = 0; j < COL_COUNT; j++) {
             this->gameBoard.emplace_back(i, j);
@@ -23,11 +25,9 @@ void Board::setup() {
         unsigned long row = static_cast<unsigned long>(minePlaceRow(mersenne));
         unsigned long col = static_cast<unsigned long>(minePlaceCol(mersenne));
         if(this->gameBoard[row*COL_COUNT + col].mineCheck()) {
-            std::cout << "Will not add mine at " << row << ", " << col << "\n";
             continue;
         }
         this->gameBoard[row*COL_COUNT + col].setMine();
-        std::cout << "Added mine at " << row << ", " << col << "\n";
         numMines--;
     }
     for(unsigned long i = 1; i < ROW_COUNT-1; i++) {
@@ -45,6 +45,28 @@ void Board::setup() {
             }
         }
     }
+}
+
+void Board::triggerWinCondition() {
+    this->hasWon = true;
+}
+
+void Board::triggerLoseCondition() {
+    this->hasLost = true;
+}
+
+
+
+
+
+
+
+// debug functions go here
+
+void Board::debug_set_revealed(int i, int j) {
+    unsigned long _i = static_cast<unsigned long>(i);
+    unsigned long _j = static_cast<unsigned long>(j);
+    this->gameBoard[(_i*COL_COUNT)+_j].setState(Cell::State::REVEALED);
 }
 
 void Board::debug_show() {
@@ -68,5 +90,40 @@ void Board::debug_show_counts() {
             std::cout << this->gameBoard[i*COL_COUNT + j].neighborCount << " ";
         }
         std::cout << "\n";
+    }
+}
+
+void Board::debug_draw() {
+    for(unsigned long i = 1; i < ROW_COUNT-1; i++) {
+        for(unsigned long j = 1; j < COL_COUNT-1; j++) {
+            if(this->gameBoard[(i*COL_COUNT)+j].getState() == Cell::State::UNREVEALED) {
+                std::cout << "X" << " ";
+            }
+            else if(this->gameBoard[(i*COL_COUNT)+j].getState() == Cell::State::REVEALED
+                    && this->gameBoard[(i*COL_COUNT)+j].mineCheck()) {
+                std::cout << "!" << " ";
+            }
+            else {
+                std::cout << this->gameBoard[(i*COL_COUNT)+j].neighbors() << " ";
+            }
+        }
+        std::cout << "\n";
+    }
+}
+
+void Board::debug_play() {
+    int i, j;
+    debug_draw();
+    while(true) {
+        std::cout << "Enter valid i, j:\n";
+        std::cin >> i;
+        std::cin >> j;
+        if(i < 1 || i >= ROW_COUNT-1 || j < 1 || j >= ROW_COUNT-1)
+            std::cout << "Invalid i|j\n";
+        else {
+            std::cout << "----------------------\n";
+            debug_set_revealed(i, j);
+            debug_draw();
+        }
     }
 }

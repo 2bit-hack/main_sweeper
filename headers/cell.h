@@ -35,6 +35,7 @@ public:
     void setMine();
     int neighbors();
     State getState();
+    void setState(State state);
     friend class Board;
 };
 

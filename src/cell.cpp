@@ -23,3 +23,7 @@ void Cell::setMine() {
 Cell::State Cell::getState() {
     return this->state;
 }
+
+void Cell::setState(Cell::State state) {
+    this->state = state;
+}

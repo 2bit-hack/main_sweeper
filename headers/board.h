@@ -11,13 +11,20 @@ class Board
 private:
     std::vector<Cell> gameBoard;
     bool hasWon, hasLost;
-    int minesRemaining;
+    int nonMinesRemaining;
 public:
     Board();
     ~Board();
     void setup();
+    void triggerWinCondition();
+    void triggerLoseCondition();
+
+    // debug functions only
+    void debug_set_revealed(int i, int j);
     void debug_show();
     void debug_show_counts();
+    void debug_draw();
+    [[noreturn]] void debug_play();
 };
 
 #endif // BOARD_H
