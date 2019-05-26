@@ -1,8 +1,12 @@
 LICENSE
 README.md
+gfxhandler.h
+gfxhandler.h
 headers/board.h
 headers/cell.h
+headers/gfxhandler.h
 makefile
 src/board.cpp
 src/cell.cpp
+src/gfxhandler.cpp
 src/main.cpp
