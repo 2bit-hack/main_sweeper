@@ -22,6 +22,7 @@ public:
     void reveal(int i, int j);
     void toggleFlag(int i, int j);
     void floodFill(unsigned long i, unsigned long j);
+    void checkCompletion();
     void triggerWinCondition();
     void triggerLoseCondition();
     friend class GfxHandler;

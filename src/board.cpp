@@ -3,7 +3,7 @@
 Board::Board()
 {
     this->gState = Board::GameState::IN_PROGRESS;
-    this->nonMinesRemaining = (ROW_COUNT * COL_COUNT) - MINE_COUNT;
+    this->nonMinesRemaining = ((ROW_COUNT-2) * (COL_COUNT-2)) - MINE_COUNT;
     this->mineRevealed = false;
     this->gameBoard.reserve(ROW_COUNT * COL_COUNT);
     for(unsigned long i = 0; i < ROW_COUNT; i++) {
@@ -56,11 +56,13 @@ void Board::reveal(int i, int j) {
     unsigned long _j = static_cast<unsigned long>(j);
     if(this->gameBoard[(_i*COL_COUNT)+_j].getState() == Cell::State::FLAGGED)
         return;
-    if(this->gameBoard[(_i*COL_COUNT)+_j].neighbors() != 0) {
+    if(this->gameBoard[(_i*COL_COUNT)+_j].getState() == Cell::State::REVEALED)
+        return;
+    if(this->gameBoard[(_i*COL_COUNT)+_j].mineCheck()) {
         this->gameBoard[(_i*COL_COUNT)+_j].setState(Cell::State::REVEALED);
-        this->nonMinesRemaining--;
+        this->mineRevealed = true;
     }
-    else if(this->gameBoard[(_i*COL_COUNT)+_j].mineCheck()) {
+    else if(this->gameBoard[(_i*COL_COUNT)+_j].neighbors() != 0) {
         this->gameBoard[(_i*COL_COUNT)+_j].setState(Cell::State::REVEALED);
         this->nonMinesRemaining--;
     }
@@ -79,6 +81,13 @@ void Board::toggleFlag(int i, int j) {
     else {
         this->gameBoard[(_i*COL_COUNT)+_j].setState(Cell::State::FLAGGED);
     }
+}
+
+void Board::checkCompletion() {
+    if(this->nonMinesRemaining == 0)
+        triggerWinCondition();
+    else if(this->mineRevealed)
+        triggerLoseCondition();
 }
 
 void Board::triggerWinCondition() {
