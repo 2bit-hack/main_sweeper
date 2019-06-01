@@ -4,6 +4,7 @@ Board::Board()
 {
     this->gState = Board::GameState::IN_PROGRESS;
     this->nonMinesRemaining = (ROW_COUNT * COL_COUNT) - MINE_COUNT;
+    this->mineRevealed = false;
     this->gameBoard.reserve(ROW_COUNT * COL_COUNT);
     for(unsigned long i = 0; i < ROW_COUNT; i++) {
         for(unsigned long j = 0; j < COL_COUNT; j++) {
@@ -50,6 +51,36 @@ void Board::setup() {
     }
 }
 
+void Board::reveal(int i, int j) {
+    unsigned long _i = static_cast<unsigned long>(i);
+    unsigned long _j = static_cast<unsigned long>(j);
+    if(this->gameBoard[(_i*COL_COUNT)+_j].getState() == Cell::State::FLAGGED)
+        return;
+    if(this->gameBoard[(_i*COL_COUNT)+_j].neighbors() != 0) {
+        this->gameBoard[(_i*COL_COUNT)+_j].setState(Cell::State::REVEALED);
+        this->nonMinesRemaining--;
+    }
+    else if(this->gameBoard[(_i*COL_COUNT)+_j].mineCheck()) {
+        this->gameBoard[(_i*COL_COUNT)+_j].setState(Cell::State::REVEALED);
+        this->nonMinesRemaining--;
+    }
+    else {
+        floodFill(_i, _j);
+    }
+}
+
+void Board::toggleFlag(int i, int j) {
+    unsigned long _i = static_cast<unsigned long>(i);
+    unsigned long _j = static_cast<unsigned long>(j);
+    if(this->gameBoard[(_i*COL_COUNT)+_j].getState() == Cell::State::REVEALED)
+        return;
+    else if(this->gameBoard[(_i*COL_COUNT)+_j].getState() == Cell::State::FLAGGED)
+        this->gameBoard[(_i*COL_COUNT)+_j].setState(Cell::State::UNREVEALED);
+    else {
+        this->gameBoard[(_i*COL_COUNT)+_j].setState(Cell::State::FLAGGED);
+    }
+}
+
 void Board::triggerWinCondition() {
     this->gState = Board::GameState::WON;
 }
@@ -62,6 +93,10 @@ void Board::floodFill(unsigned long i, unsigned long j) {
     // base cases
     // if it's a mine
     if(this->gameBoard[(i*COL_COUNT)+j].mineCheck()) {
+        return;
+    }
+    // if it's a flag
+    if(this->gameBoard[(i*COL_COUNT)+j].getState() == Cell::State::FLAGGED) {
         return;
     }
     // if it's already revealed
@@ -77,6 +112,7 @@ void Board::floodFill(unsigned long i, unsigned long j) {
         return;
     }
     this->gameBoard[(i*COL_COUNT)+j].setState(Cell::State::REVEALED);
+    this->nonMinesRemaining--;
     floodFill(i-1, j-1);
     floodFill(i-1, j);
     floodFill(i-1, j+1);

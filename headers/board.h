@@ -13,16 +13,18 @@ private:
       IN_PROGRESS, WON, LOST
     };
     std::vector<Cell> gameBoard;
-    int nonMinesRemaining;
+    int nonMinesRemaining; bool mineRevealed;
     GameState gState;
 public:
     Board();
     ~Board();
     void setup();
+    void reveal(int i, int j);
+    void toggleFlag(int i, int j);
     void floodFill(unsigned long i, unsigned long j);
     void triggerWinCondition();
     void triggerLoseCondition();
-
+    friend class GfxHandler;
     // debug functions only
     void debug_set_revealed(int i, int j);
     void debug_show();

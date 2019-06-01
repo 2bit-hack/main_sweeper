@@ -1,15 +1,14 @@
 #ifndef CELL_H
 #define CELL_H
 
-#define ROW_COUNT 10
-#define COL_COUNT 10
-#define MINE_COUNT 10
+#include "../defines.h"
 
 #include <iostream>
 #include <vector>
 #include <random>
 #include <ctime>
 #include <memory>
+#include <SFML/Graphics.hpp>
 
 // used exclusively for storing the state of a cell
 // all actual computations should be handled by the Board class
@@ -37,6 +36,7 @@ public:
     State getState();
     void setState(State state);
     friend class Board;
+    friend class GfxHandler;
 };
 
 #endif // CELL_H

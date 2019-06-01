@@ -3,10 +3,11 @@
 
 int main() {
     std::unique_ptr<Board> board = std::make_unique<Board>();
-    std::unique_ptr<GfxHandler> gfx = std::make_unique<GfxHandler>();
     board->setup();
     board->debug_show();
-    //board->debug_show_counts();
-    //board->debug_play();
+    std::cout << "\n";
+    board->debug_show_counts();
+    std::unique_ptr<GfxHandler> gfx = std::make_unique<GfxHandler>();
+    gfx->showWindow(*board);
     return 0;
 }
