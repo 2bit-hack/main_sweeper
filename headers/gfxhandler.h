@@ -11,6 +11,12 @@ private:
 public:
     sf::Color LightGreen = sf::Color(50, 205, 50);
     sf::Color DarkGreen = sf::Color(34, 139, 34);
+    sf::Font font;
+    sf::Text neighborCount;
+    sf::Texture flagTexture;
+    sf::Sprite flagSprite;
+    sf::Texture mineTexture;
+    sf::Sprite mineSprite;
     GfxHandler();
     void showWindow(Board& board);
     void drawGameBoard(Board& board);

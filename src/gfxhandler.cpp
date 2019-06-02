@@ -2,13 +2,25 @@
 
 GfxHandler::GfxHandler()
 {
-    this->window.create(sf::VideoMode(320, 320), "main_sweeper()");
+    this->window.create(sf::VideoMode(RESOLUTION*(ROW_COUNT-2), RESOLUTION*(COL_COUNT-2)),
+                        "main_sweeper()");
+    font.loadFromFile("assets/OpenSans-Light.ttf");
+    neighborCount.setFont(font);
+    neighborCount.setFillColor(DarkGreen);
+    neighborCount.setOrigin(-10.0f, -2.0f);
+    flagTexture.loadFromFile("assets/flag.png");
+    flagSprite.setTexture(flagTexture);
+    flagSprite.setScale(0.20f, 0.15f);
+    flagSprite.setOrigin(-20.0f, -10.0f);
+    mineTexture.loadFromFile("assets/mine-png-8.png");
+    mineSprite.setTexture(mineTexture);
+    mineSprite.setScale(0.025f, 0.025f);
+    mineSprite.setOrigin(10.0f, 5.0f);
 }
 
 void GfxHandler::showWindow(Board& board) {
     while(this->window.isOpen() && board.gState == Board::GameState::IN_PROGRESS)
         {
-            //std::cout << board.nonMinesRemaining << "\n";
             sf::Event event;
             while (this->window.pollEvent(event))
             {
@@ -25,8 +37,8 @@ void GfxHandler::showWindow(Board& board) {
             board.checkCompletion();
         }
     showAll(board);
-    std::string message = (board.gState == Board::GameState::WON)?"You won!\n":"You lost!\n";
-    std::cout << message;
+//    std::string message = (board.gState == Board::GameState::WON)?"You won!\n":"You lost!\n";
+//    std::cout << message;
     while(this->window.isOpen()) {
         sf::Event event;
         while(this->window.pollEvent(event))
@@ -53,21 +65,32 @@ void GfxHandler::drawGameBoard(Board& board) {
                 tile.setFillColor(LightGreen);
             else
                 tile.setFillColor(DarkGreen);
-            if(board.gameBoard[(_i*ROW_COUNT)+_j].getState() == Cell::State::UNREVEALED) {
+            if(board.gameBoard[(_i*COL_COUNT)+_j].getState() == Cell::State::UNREVEALED) {
                 this->window.draw(tile);
             }
-            else if(board.gameBoard[(_i*ROW_COUNT)+_j].getState() == Cell::State::FLAGGED) {
-                tile.setFillColor(sf::Color::Blue);
+            else if(board.gameBoard[(_i*COL_COUNT)+_j].getState() == Cell::State::FLAGGED) {
+                this->flagSprite.setPosition((_j-1)*RESOLUTION, (_i-1)*RESOLUTION);
                 this->window.draw(tile);
+                this->window.draw(flagSprite);
             }
-            else if(board.gameBoard[(_i*ROW_COUNT)+_j].getState() == Cell::State::REVEALED
-                    && board.gameBoard[(_i*ROW_COUNT)+_j].mineCheck()) {
-                tile.setFillColor(sf::Color::Red);
+            else if(board.gameBoard[(_i*COL_COUNT)+_j].getState() == Cell::State::REVEALED
+                    && board.gameBoard[(_i*COL_COUNT)+_j].mineCheck()) {
+                this->mineSprite.setPosition((_j-1)*RESOLUTION, (_i-1)*RESOLUTION);
+                tile.setFillColor(sf::Color::White);
+                this->window.draw(tile);
+                this->window.draw(mineSprite);
+            }
+            else if(board.gameBoard[(_i*COL_COUNT)+_j].getState() == Cell::State::REVEALED
+                    && board.gameBoard[(_i*COL_COUNT)+_j].neighbors() == 0){
+                tile.setFillColor(sf::Color::White);
                 this->window.draw(tile);
             }
             else {
                 tile.setFillColor(sf::Color::White);
+                neighborCount.setString(std::to_string(board.gameBoard[(_i*COL_COUNT)+_j].neighbors()));
+                neighborCount.setPosition((_j-1)*RESOLUTION, (_i-1)*RESOLUTION);
                 this->window.draw(tile);
+                this->window.draw(neighborCount);
             }
         }
     }

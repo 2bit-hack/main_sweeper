@@ -99,7 +99,6 @@ void Board::triggerLoseCondition() {
 }
 
 void Board::floodFill(unsigned long i, unsigned long j) {
-    // base cases
     // if it's a mine
     if(this->gameBoard[(i*COL_COUNT)+j].mineCheck()) {
         return;
