@@ -11,4 +11,5 @@ g++ -o exec main.o cell.o board.o gfxhandler.o -lsfml-graphics -lsfml-window -ls
 Then run exec
 
 Beware of any potentially hazardous code, you have been warned
+
 Will update readme once a stable release is out
