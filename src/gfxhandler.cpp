@@ -2,12 +2,15 @@
 
 GfxHandler::GfxHandler()
 {
+    // loading icon slows down render noticeably?
     this->window.create(sf::VideoMode(RESOLUTION*(ROW_COUNT-2), RESOLUTION*(COL_COUNT-2)),
                         "main_sweeper()");
     font.loadFromFile("assets/OpenSans-Light.ttf");
     neighborCount.setFont(font);
     neighborCount.setFillColor(DarkGreen);
     neighborCount.setOrigin(-10.0f, -2.0f);
+    //TODO: set a better icon
+    //icon.loadFromFile("assets/mine-png-8.png");
     flagTexture.loadFromFile("assets/flag.png");
     flagSprite.setTexture(flagTexture);
     flagSprite.setScale(0.20f, 0.15f);
@@ -16,6 +19,7 @@ GfxHandler::GfxHandler()
     mineSprite.setTexture(mineTexture);
     mineSprite.setScale(0.025f, 0.025f);
     mineSprite.setOrigin(10.0f, 5.0f);
+    //this->window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
 }
 
 void GfxHandler::showWindow(Board& board) {
@@ -24,21 +28,22 @@ void GfxHandler::showWindow(Board& board) {
             sf::Event event;
             while (this->window.pollEvent(event))
             {
-                if (event.type == sf::Event::Closed)
+                if (event.type == sf::Event::Closed) {
                     this->window.close();
+                }
             }
-            if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
-                handleLeftClick(sf::Mouse::getPosition(this->window), board);
-            if(sf::Mouse::isButtonPressed(sf::Mouse::Right))
-                handleRightClick(sf::Mouse::getPosition(this->window), board);
+            if(event.type == sf::Event::MouseButtonPressed) {
+                if(event.mouseButton.button == sf::Mouse::Left)
+                    handleLeftClick(sf::Mouse::getPosition(this->window), board);
+                if(event.mouseButton.button == sf::Mouse::Right)
+                    handleRightClick(sf::Mouse::getPosition(this->window), board);
+            }
             this->window.clear();
             drawGameBoard(board);
             this->window.display();
             board.checkCompletion();
         }
     showAll(board);
-//    std::string message = (board.gState == Board::GameState::WON)?"You won!\n":"You lost!\n";
-//    std::cout << message;
     while(this->window.isOpen()) {
         sf::Event event;
         while(this->window.pollEvent(event))
@@ -100,17 +105,23 @@ bool GfxHandler::inBounds(int x, int y) {
     if(x < 1 || x >= ROW_COUNT-1 || y < 1 || y >= COL_COUNT-1)
         return false;
     return true;
+    //FIXME: handle possible out of bounds on edges
 }
 
 void GfxHandler::handleLeftClick(sf::Vector2i clickPos, Board& board) {
+    if(clickPos.x < 0 || clickPos.y < 0)
+        return;
     if(inBounds((clickPos.y/RESOLUTION)+1, (clickPos.x/RESOLUTION)+1)) {
         board.reveal((clickPos.y/RESOLUTION)+1, (clickPos.x/RESOLUTION)+1);
     }
 }
 
 void GfxHandler::handleRightClick(sf::Vector2i clickPos, Board &board) {
+    if(clickPos.x < 0 || clickPos.y < 0)
+        return;
     if(inBounds((clickPos.y/RESOLUTION)+1, (clickPos.x/RESOLUTION)+1))
         board.toggleFlag((clickPos.y/RESOLUTION)+1, (clickPos.x/RESOLUTION)+1);
+    //FIXME: bad repeated toggle; have a fix
 }
 
 void GfxHandler::showAll(Board &board) {

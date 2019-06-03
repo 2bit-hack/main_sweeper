@@ -13,6 +13,7 @@ public:
     sf::Color DarkGreen = sf::Color(34, 139, 34);
     sf::Font font;
     sf::Text neighborCount;
+    sf::Image icon;
     sf::Texture flagTexture;
     sf::Sprite flagSprite;
     sf::Texture mineTexture;
