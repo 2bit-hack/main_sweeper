@@ -117,6 +117,7 @@ void Board::floodFill(unsigned long i, unsigned long j) {
     }
     // if it has non-zero neighbors
     if(this->gameBoard[(i*COL_COUNT)+j].neighbors() != 0) {
+        this->gameBoard[(i*COL_COUNT)+j].setState(Cell::State::REVEALED);
         return;
     }
     this->gameBoard[(i*COL_COUNT)+j].setState(Cell::State::REVEALED);

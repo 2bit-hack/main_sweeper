@@ -17,3 +17,8 @@ board.o: src/board.cpp
 
 gfxhandler.o: src/gfxhandler.cpp
 	$(CC) -c src/gfxhandler.cpp
+
+.PHONY: clean
+
+clean:
+	rm -f main.o board.o cell.o gfxhandler.o exec
