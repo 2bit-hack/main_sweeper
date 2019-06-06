@@ -7,7 +7,7 @@ GfxHandler::GfxHandler()
                         "main_sweeper()");
     font.loadFromFile("assets/OpenSans-Light.ttf");
     neighborCount.setFont(font);
-    neighborCount.setFillColor(DarkGreen);
+    neighborCount.setFillColor(sf::Color::Red);
     neighborCount.setOrigin(-10.0f, -2.0f);
     //TODO: set a better icon
     //icon.loadFromFile("assets/mine-png-8.png");
@@ -95,6 +95,22 @@ void GfxHandler::drawGameBoard(Board& board) {
                 tile.setFillColor(sf::Color::White);
                 neighborCount.setString(std::to_string(board.gameBoard[(_i*COL_COUNT)+_j].neighbors()));
                 neighborCount.setPosition((_j-1)*RESOLUTION, (_i-1)*RESOLUTION);
+                if(board.gameBoard[(_i*COL_COUNT)+_j].neighbors() == 1)
+                    neighborCount.setFillColor(sf::Color(115, 242, 51));
+                if(board.gameBoard[(_i*COL_COUNT)+_j].neighbors() == 2)
+                    neighborCount.setFillColor(sf::Color(59, 155, 10));
+                if(board.gameBoard[(_i*COL_COUNT)+_j].neighbors() == 3)
+                    neighborCount.setFillColor(sf::Color(246, 255, 0));
+                if(board.gameBoard[(_i*COL_COUNT)+_j].neighbors() == 4)
+                    neighborCount.setFillColor(sf::Color(249, 181, 24));
+                if(board.gameBoard[(_i*COL_COUNT)+_j].neighbors() == 5)
+                    neighborCount.setFillColor(sf::Color(249, 99, 24));
+                if(board.gameBoard[(_i*COL_COUNT)+_j].neighbors() == 6)
+                    neighborCount.setFillColor(sf::Color(246, 54, 25));
+                if(board.gameBoard[(_i*COL_COUNT)+_j].neighbors() == 7)
+                    neighborCount.setFillColor(sf::Color(171, 8, 8));
+                if(board.gameBoard[(_i*COL_COUNT)+_j].neighbors() == 8)
+                    neighborCount.setFillColor(sf::Color(0, 0, 0));
                 this->window.draw(tile);
                 this->window.draw(neighborCount);
             }
