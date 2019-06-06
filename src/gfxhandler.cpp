@@ -24,25 +24,26 @@ GfxHandler::GfxHandler()
 
 void GfxHandler::showWindow(Board& board) {
     while(this->window.isOpen() && board.gState == Board::GameState::IN_PROGRESS)
+    {
+        sf::Event event;
+        while (this->window.pollEvent(event))
         {
-            sf::Event event;
-            while (this->window.pollEvent(event))
-            {
-                if (event.type == sf::Event::Closed) {
-                    this->window.close();
-                }
+            if (event.type == sf::Event::Closed) {
+                this->window.close();
             }
+
             if(event.type == sf::Event::MouseButtonPressed) {
                 if(event.mouseButton.button == sf::Mouse::Left)
                     handleLeftClick(sf::Mouse::getPosition(this->window), board);
                 if(event.mouseButton.button == sf::Mouse::Right)
                     handleRightClick(sf::Mouse::getPosition(this->window), board);
             }
-            this->window.clear();
-            drawGameBoard(board);
-            this->window.display();
-            board.checkCompletion();
         }
+        this->window.clear();
+        drawGameBoard(board);
+        this->window.display();
+        board.checkCompletion();
+    }
     showAll(board);
     while(this->window.isOpen()) {
         sf::Event event;
