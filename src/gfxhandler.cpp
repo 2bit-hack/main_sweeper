@@ -141,7 +141,6 @@ bool GfxHandler::inBounds(int x, int y) {
     if(x < 1 || x >= ROW_COUNT-1 || y < 1 || y >= COL_COUNT-1)
         return false;
     return true;
-    //FIXME: handle possible out of bounds on edges
 }
 
 void GfxHandler::handleLeftClick(sf::Vector2i clickPos, Board& board) {
