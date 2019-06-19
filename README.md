@@ -8,3 +8,7 @@
 ### Build
 * clone this repository and run ```make```
 * then run ```./exec```
+
+![alt text][logo]
+
+[logo]: https://github.com/2bit-hack/main_sweeper/blob/master/mainsrcn.png "main_sweeper"
