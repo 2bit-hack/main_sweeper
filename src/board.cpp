@@ -5,6 +5,8 @@ Board::Board()
     this->gState = Board::GameState::IN_PROGRESS;
     this->nonMinesRemaining = ((ROW_COUNT-2) * (COL_COUNT-2)) - MINE_COUNT;
     this->mineRevealed = false;
+    this->isFirstClick = true;
+    this->firstClickPos.first = this->firstClickPos.second = 0;
     this->gameBoard.reserve(ROW_COUNT * COL_COUNT);
     for(unsigned long i = 0; i < ROW_COUNT; i++) {
         for(unsigned long j = 0; j < COL_COUNT; j++) {
@@ -27,7 +29,9 @@ void Board::setup() {
     while(numMines) {
         unsigned long row = static_cast<unsigned long>(minePlaceRow(mersenne));
         unsigned long col = static_cast<unsigned long>(minePlaceCol(mersenne));
-        if(this->gameBoard[row*COL_COUNT + col].mineCheck()) {
+        if(this->gameBoard[row*COL_COUNT + col].mineCheck() ||
+                (row == static_cast<unsigned long>(firstClickPos.first) &&
+                 col == static_cast<unsigned long>(firstClickPos.second))) {
             continue;
         }
         this->gameBoard[row*COL_COUNT + col].setMine();
@@ -51,23 +55,26 @@ void Board::setup() {
     }
 }
 
-void Board::reveal(int i, int j) {
+bool Board::reveal(int i, int j) {
     unsigned long _i = static_cast<unsigned long>(i);
     unsigned long _j = static_cast<unsigned long>(j);
     if(this->gameBoard[(_i*COL_COUNT)+_j].getState() == Cell::State::FLAGGED)
-        return;
+        return false;
     if(this->gameBoard[(_i*COL_COUNT)+_j].getState() == Cell::State::REVEALED)
-        return;
+        return false;
     if(this->gameBoard[(_i*COL_COUNT)+_j].mineCheck()) {
         this->gameBoard[(_i*COL_COUNT)+_j].setState(Cell::State::REVEALED);
         this->mineRevealed = true;
+        return true;
     }
     else if(this->gameBoard[(_i*COL_COUNT)+_j].neighbors() != 0) {
         this->gameBoard[(_i*COL_COUNT)+_j].setState(Cell::State::REVEALED);
         this->nonMinesRemaining--;
+        return false;
     }
     else {
         floodFill(_i, _j);
+        return false;
     }
 }
 
@@ -118,6 +125,7 @@ void Board::floodFill(unsigned long i, unsigned long j) {
     // if it has non-zero neighbors
     if(this->gameBoard[(i*COL_COUNT)+j].neighbors() != 0) {
         this->gameBoard[(i*COL_COUNT)+j].setState(Cell::State::REVEALED);
+        this->nonMinesRemaining--;
         return;
     }
     this->gameBoard[(i*COL_COUNT)+j].setState(Cell::State::REVEALED);

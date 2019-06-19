@@ -1,13 +1,16 @@
 LICENSE
 README.md
 assets/OpenSans-Light.ttf
+assets/click.wav
 assets/flag.png
 assets/mine-png-8.png
+assets/mine.wav
 assets/staatliches.ttf
 defines.h
 defines.h
 gfxhandler.h
 gfxhandler.h
+headers/audiohandler.h
 headers/board.h
 headers/board.h
 headers/cell.h
@@ -15,6 +18,7 @@ headers/cell.h
 headers/gfxhandler.h
 headers/gfxhandler.h
 makefile
+src/audiohandler.cpp
 src/board.cpp
 src/board.cpp
 src/cell.cpp

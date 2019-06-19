@@ -6,6 +6,7 @@ GfxHandler::GfxHandler()
     this->window.create(sf::VideoMode(RESOLUTION*(ROW_COUNT-2), RESOLUTION*(COL_COUNT-2)),
                         "main_sweeper()");
     font.loadFromFile("assets/OpenSans-Light.ttf");
+    aud = std::make_unique<AudioHandler>();
     neighborCount.setFont(font);
     neighborCount.setFillColor(sf::Color::Red);
     neighborCount.setOrigin(-10.0f, -2.0f);
@@ -33,10 +34,20 @@ void GfxHandler::showWindow(Board& board) {
             }
 
             if(event.type == sf::Event::MouseButtonPressed) {
-                if(event.mouseButton.button == sf::Mouse::Left)
+                if(event.mouseButton.button == sf::Mouse::Left) {
+                    if(board.isFirstClick) {
+                        board.firstClickPos.first = getX(sf::Mouse::getPosition(this->window));
+                        board.firstClickPos.second = getY(sf::Mouse::getPosition(this->window));
+                        board.setup();
+                        board.isFirstClick = false;
+                    }
                     handleLeftClick(sf::Mouse::getPosition(this->window), board);
-                if(event.mouseButton.button == sf::Mouse::Right)
+                    aud->playClick();
+                }
+                if(event.mouseButton.button == sf::Mouse::Right) {
                     handleRightClick(sf::Mouse::getPosition(this->window), board);
+                    aud->playClick();
+                }
             }
         }
         this->window.clear();
@@ -118,6 +129,14 @@ void GfxHandler::drawGameBoard(Board& board) {
     }
 }
 
+int GfxHandler::getX(sf::Vector2i pos) {
+    return (pos.y/RESOLUTION)+1;
+}
+
+int GfxHandler::getY(sf::Vector2i pos) {
+    return (pos.x/RESOLUTION)+1;
+}
+
 bool GfxHandler::inBounds(int x, int y) {
     if(x < 1 || x >= ROW_COUNT-1 || y < 1 || y >= COL_COUNT-1)
         return false;
@@ -128,17 +147,18 @@ bool GfxHandler::inBounds(int x, int y) {
 void GfxHandler::handleLeftClick(sf::Vector2i clickPos, Board& board) {
     if(clickPos.x < 0 || clickPos.y < 0)
         return;
-    if(inBounds((clickPos.y/RESOLUTION)+1, (clickPos.x/RESOLUTION)+1)) {
-        board.reveal((clickPos.y/RESOLUTION)+1, (clickPos.x/RESOLUTION)+1);
+    if(inBounds(getX(clickPos), getY(clickPos))) {
+        bool mineClicked = board.reveal(getX(clickPos), getY(clickPos));
+        if(mineClicked)
+            aud->playMine();
     }
 }
 
 void GfxHandler::handleRightClick(sf::Vector2i clickPos, Board &board) {
     if(clickPos.x < 0 || clickPos.y < 0)
         return;
-    if(inBounds((clickPos.y/RESOLUTION)+1, (clickPos.x/RESOLUTION)+1))
-        board.toggleFlag((clickPos.y/RESOLUTION)+1, (clickPos.x/RESOLUTION)+1);
-    //FIXME: bad repeated toggle; have a fix
+    if(inBounds(getX(clickPos), getY(clickPos)))
+        board.toggleFlag(getX(clickPos), getY(clickPos));
 }
 
 void GfxHandler::showAll(Board &board) {

@@ -13,13 +13,14 @@ private:
       IN_PROGRESS, WON, LOST
     };
     std::vector<Cell> gameBoard;
+    bool isFirstClick; std::pair<int, int> firstClickPos;
     int nonMinesRemaining; bool mineRevealed;
     GameState gState;
 public:
     Board();
     ~Board();
     void setup();
-    void reveal(int i, int j);
+    bool reveal(int i, int j);
     void toggleFlag(int i, int j);
     void floodFill(unsigned long i, unsigned long j);
     void checkCompletion();
